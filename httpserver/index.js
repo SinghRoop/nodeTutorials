@@ -1,13 +1,25 @@
+const http = require("http");
+const fs = require("fs");
 
-const http = require("http")
+const server = http.createServer((req, res) => {
+  const data = fs.readFile(`${__dirname}/UserApi/userapi.json`, "utf8");
+  const objData = JSON.parse(data);
 
-const server = http.createServer((req, res) =>{
-    const ip = res.socket.remoteAddress;
-    const port = res.socket.remotePort
-    res.end(`Your IP address is ${ip} and your port is ${port}`)
-    // res.end('hello from server')
-})
+  if (req.url == "/") {
+    res.end("hello from the home side");
+  } else if (req.url == "/about") {
+    res.end("hello from the about side");
+  } else if (req.url == "/contact") {
+    res.end("hello from the contact side");
+  } else if (req.url == "/userapi") {
+    res.writeHead(200, { "Content-type": "application/json" });
+    res.end(objData[0].name);
+  } else {
+    res.writeHead(404, { "Content-type": "text/html" });
+    res.end("<h1> 404 error page </h1>");
+  }
+});
 
-server.listen(8000, ()=>{
- console.log('listenning on port 8000');   
-})
+server.listen(8000, () => {
+  console.log("listenning on port 8000");
+});
